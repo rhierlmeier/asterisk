@@ -1,5 +1,41 @@
 #!/bin/sh
 
+if [ ! -f /etc/asterisk/indications.conf ]; then
+   echo "Creating /etc/asterisk/indications.conf "
+   if [ -z "$COUNTRY" ]; then
+      COUNTRY=de
+   fi
+   cat << EOF > /etc/asterisk/indications.conf
+[general]
+country=$COUNTRY       ; default location
+[de]
+description = Germany
+ringcadance = 1000,4000
+dial = 425
+ring = 425/1000,0/4000
+busy = 425/480,0/480
+congestion = 425/480,0/480
+callwaiting = 425/2000,0/6000
+dialrecall = 425/500,0/500,425/500,0/500,425/500,0/500,1600/100,0/900
+record = 1400/500,0/15000
+info = 950/330,0/200,1400/330,0/200,1800/330,0/1000
+EOF
+else
+  echo "/etc/asterisk/indications.conf already exists"
+fi
+
+if [ ! -f /etc/asterisk/phoneprov.conf ]; then
+    echo "Creating /etc/asterisk/phoneprov.conf"
+    if [ -z "$SIP_HOST" ]; then
+        echo "SIP_HOST not set"
+        exit 1
+    fi
+
+    sed "s/@@@SIP_HOST@@@/$SIP_HOST/g" /etc/asterisk/phoneprov.conf.template >  /etc/asterisk/phoneprov.conf
+fi
+
+
+
 
 if [ ! -f /etc/asterisk/pjsip.conf ]; then
     echo "Creating pjsip.conf"
