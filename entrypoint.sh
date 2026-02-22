@@ -49,7 +49,7 @@ bind=0.0.0.0:$SIP_PORT
 
 [fritzbox_auth]
 type=auth
-auth_type=password
+auth_type=userpass
 password=$SIP_PASSWORD
 username=$SIP_USERNAME
 
