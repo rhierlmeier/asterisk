@@ -34,17 +34,6 @@ if [ ! -f /etc/asterisk/phoneprov.conf ]; then
     sed "s/@@@SIP_HOST@@@/$SIP_HOST/g" /etc/asterisk/phoneprov.conf.template >  /etc/asterisk/phoneprov.conf
 fi
 
-if [ ! -f /etc/asterisk/extensions.conf ]; then
-    echo "Creating /etc/asterisk/extensions.conf"
-    if [ -z "$SIP_HOST" ]; then
-        echo "SIP_HOST not set"
-        exit 1
-    fi
-
-    sed "s/@@@SIP_HOST@@@/$SIP_HOST/g" /etc/asterisk/extensions.conf.template >  /etc/asterisk/extensions.conf
-fi
-
-
 if [ ! -f /etc/asterisk/pjsip.conf ]; then
     echo "Creating pjsip.conf"
     if [ -z "$SIP_HOST" ]; then
@@ -71,7 +60,6 @@ if [ ! -f /etc/asterisk/pjsip.conf ]; then
         exit 1
     fi
 
-
     if [ -z "$SIP_FROM_USER" ]; then
         SIP_FROM_USER=$SIP_USERNAME
     fi
@@ -90,6 +78,9 @@ if [ ! -f /etc/asterisk/pjsip.conf ]; then
 type=transport
 protocol=udp
 bind=0.0.0.0:$SIP_PORT
+local_net=${SIP_LOCAL_NET} ; Internes Netz
+external_media_address=${SIP_EXTERN_HOST} ; Eure öffentliche IP
+external_signaling_address=${SIP_EXTERN_HOST}
 
 [fritzbox_auth]
 type=auth
@@ -107,7 +98,8 @@ retry_interval=60
 
 [fritzbox]
 type=aor
-contact=sip:$SIP_HOST
+contact=sip:${SIP_HOST}:${SIP_PORT}
+qualify_frequency=60
 
 [fritzbox]
 type=endpoint
@@ -123,7 +115,8 @@ from_user=$SIP_FROM_USER
 [fritzbox]
 type=identify
 endpoint=fritzbox
-match=$SIP_HOST
+match=${SIP_HOST}
+
 EOF
     echo "Created pjsip.conf"
 fi
