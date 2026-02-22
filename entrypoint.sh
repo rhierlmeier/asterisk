@@ -37,10 +37,10 @@ fi
 if [ ! -f /etc/asterisk/rtp.conf ]; then
 
    if [ -z "$RTP_START_PORT" ]; then
-     RTP_START_PORT=7090
+     RTP_START_PORT=10000
    fi
    if [ -z "$RTP_END_PORT" ]; then
-     RTP_END_PORT=7099
+     RTP_END_PORT=20000
    fi
    cat << EOF > /etc/asterisk/rtp.conf
 [general]
