@@ -34,7 +34,15 @@ if [ ! -f /etc/asterisk/phoneprov.conf ]; then
     sed "s/@@@SIP_HOST@@@/$SIP_HOST/g" /etc/asterisk/phoneprov.conf.template >  /etc/asterisk/phoneprov.conf
 fi
 
+if [ ! -f /etc/asterisk/extensions.conf ]; then
+    echo "Creating /etc/asterisk/extensions.conf"
+    if [ -z "$SIP_HOST" ]; then
+        echo "SIP_HOST not set"
+        exit 1
+    fi
 
+    sed "s/@@@SIP_HOST@@@/$SIP_HOST/g" /etc/asterisk/extensions.conf.template >  /etc/asterisk/extensions.conf
+fi
 
 
 if [ ! -f /etc/asterisk/pjsip.conf ]; then
