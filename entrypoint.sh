@@ -34,6 +34,21 @@ if [ ! -f /etc/asterisk/phoneprov.conf ]; then
     sed "s/@@@SIP_HOST@@@/$SIP_HOST/g" /etc/asterisk/phoneprov.conf.template >  /etc/asterisk/phoneprov.conf
 fi
 
+if [ ! -f /etc/asterisk/rtp.conf ]; then
+
+   if [ -z "$RTP_START_PORT" ]; then
+     RTP_START_PORT=7090
+   fi
+   if [ -z "$RTP_END_PORT" ]; then
+     RTP_END_PORT=7099
+   fi
+   cat << EOF > /etc/asterisk/rtp.conf
+[general]
+rtpstart=$RTP_START_PORT
+rtpend=$RTP_END_PORT
+EOF
+fi
+
 if [ ! -f /etc/asterisk/pjsip.conf ]; then
     echo "Creating pjsip.conf"
     if [ -z "$SIP_HOST" ]; then

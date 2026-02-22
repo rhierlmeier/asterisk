@@ -13,7 +13,8 @@ COPY entrypoint.sh /app/
 RUN chown -R asterisk:asterisk /opt/asterisk /etc/asterisk/extensions.conf /etc/asterisk/pjsip.conf \
     && chmod +x /app/create_stoerung.sh \
     && chmod +x /app/entrypoint.sh \
-    && rm /etc/asterisk/pjsip.conf /etc/asterisk/indications.conf /etc/asterisk/phoneprov.conf /etc/asterisk/extensions.conf
+    && rm /etc/asterisk/pjsip.conf /etc/asterisk/indications.conf /etc/asterisk/phoneprov.conf /etc/asterisk/extensions.conf \
+          /etc/asterisk/rtp.conf
 
 
 
