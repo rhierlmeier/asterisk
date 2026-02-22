@@ -1,8 +1,8 @@
 #!/bin/sh
 
 
-if [ ! -f /etc/asterisk/sip.conf ]; then
-    echo "Creating sip.conf"
+if [ ! -f /etc/asterisk/pjsip.conf ]; then
+    echo "Creating pjsip.conf"
     if [ -z "$SIP_HOST" ]; then
         echo "SIP_HOST not set"
         exit 1
@@ -36,26 +36,52 @@ if [ ! -f /etc/asterisk/sip.conf ]; then
         SIP_PORT=5060
     fi
 
-    touch /etc/asterisk/sip.conf
-    chown asterisk:asterisk /etc/asterisk/sip.conf
-    chmod 640 /etc/asterisk/sip.conf
+    # PJSIP configuration
+    touch /etc/asterisk/pjsip.conf
+    chown asterisk:asterisk /etc/asterisk/pjsip.conf
+    chmod 640 /etc/asterisk/pjsip.conf
 
-    cat > /etc/asterisk/sip.conf << EOF
-[general] 
-udpbindaddr=0.0.0.0:$SIP_PORT
-
-externhost=$SIP_EXTERN_HOST
-localnet=$SIP_LOCAL_NET
+    cat > /etc/asterisk/pjsip.conf << EOF
+[transport-udp]
+type=transport
+protocol=udp
+bind=0.0.0.0:$SIP_PORT
 
 [fritzbox]
-type=peer
+type=registration
+transport=transport-udp
+outbound_auth=fritzbox_auth
+server_uri=sip:$SIP_HOST
+client_uri=sip:$SIP_USERNAME@$SIP_HOST
+retry_interval=60
+
+[fritzbox_auth]
+type=auth
+auth_type=password
+password=$SIP_PASSWORD
 username=$SIP_USERNAME
-fromuser=$SIP_FROM_USER
-secret=$SIP_PASSWORD
-host=$SIP_HOST
-nat=force_rport,comedia
+
+[fritzbox]
+type=aor
+contact=sip:$SIP_HOST
+
+[fritzbox]
+type=endpoint
+transport=transport-udp
+context=public
+disallow=all
+allow=ulaw
+allow=alaw
+outbound_auth=fritzbox_auth
+aors=fritzbox
+from_user=$SIP_FROM_USER
+
+[fritzbox]
+type=identify
+endpoint=fritzbox
+match=$SIP_HOST
 EOF
-    echo 
+    echo "Created pjsip.conf"
 fi
 
 exec "$@"
