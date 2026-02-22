@@ -47,6 +47,12 @@ type=transport
 protocol=udp
 bind=0.0.0.0:$SIP_PORT
 
+[fritzbox_auth]
+type=auth
+auth_type=password
+password=$SIP_PASSWORD
+username=$SIP_USERNAME
+
 [fritzbox]
 type=registration
 transport=transport-udp
@@ -54,12 +60,6 @@ outbound_auth=fritzbox_auth
 server_uri=sip:$SIP_HOST
 client_uri=sip:$SIP_USERNAME@$SIP_HOST
 retry_interval=60
-
-[fritzbox_auth]
-type=auth
-auth_type=password
-password=$SIP_PASSWORD
-username=$SIP_USERNAME
 
 [fritzbox]
 type=aor
