@@ -73,7 +73,9 @@ This will:
 
 ### SIP Configuration
 
-The container generates `/etc/asterisk/sip.conf` on startup if it doesn't already exist. It uses the `[fritzbox]` peer name by default for outgoing calls.
+The container generates `/etc/asterisk/pjsip.conf` on startup if it doesn't already exist. It uses the `[fritzbox]` endpoint by default for outgoing calls.
+
+The registration never gives up: if the SIP server rejects it (for example while it restarts or is being reconfigured), Asterisk retries every 60 seconds instead of stopping after the first rejection or after 10 failed attempts (`auth_rejection_permanent=no`, `forbidden_retry_interval=60`, `fatal_retry_interval=60`, `max_retries=10000`).
 
 ### Notification Chain
 

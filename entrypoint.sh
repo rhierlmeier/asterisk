@@ -110,6 +110,15 @@ outbound_auth=fritzbox_auth
 server_uri=sip:$SIP_HOST
 client_uri=sip:$SIP_USERNAME@$SIP_HOST
 retry_interval=60
+; Never give up on the registration. With the Asterisk defaults
+; (auth_rejection_permanent=yes, forbidden/fatal_retry_interval=0,
+; max_retries=10) a single rejection - e.g. while the SIP server restarts or
+; is being reconfigured - stops all further attempts until Asterisk is
+; restarted, and no notification call can be placed in the meantime.
+auth_rejection_permanent=no
+forbidden_retry_interval=60
+fatal_retry_interval=60
+max_retries=10000
 
 [fritzbox]
 type=aor
